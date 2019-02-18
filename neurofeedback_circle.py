@@ -17,7 +17,7 @@ class test_inlet(pylsl.StreamInlet):
         self.sample_rate = self.info().nominal_srate()
         self.max_samples = int(max_sec * self.sample_rate)
         data_shape = (self.channel_count, self.max_samples)
-        self.data = numpy.nan * np.ones(data_shape, dtype=numpy.float32)
+        self.data = numpy.nan * numpy.ones(data_shape, dtype=numpy.float32)
 
     def update(self):
         _, timestamps = self.pull_chunk(max_samples=self.max_samples, dest_obj=self.data)
@@ -39,13 +39,14 @@ class circular_feedback(visual.Window):
         super().flip(**keyargs)
 
 
-def fft(time_sequences):
+def fft(time_sequences, sample_rate):
     """
     time_sequences  :must be [[s1,s1,s1,...],[s2,s2,s2,...],...]
     """
     window = numpy.hamming(len(time_sequences[0]))
     windowed_sequences = window * time_sequences
     
+    numpy.fft.fft(time_sequences, )
 
 if __name__ == '__main__':
     # for get EEG data
