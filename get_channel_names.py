@@ -15,6 +15,6 @@ if __name__ == '__main__':
     from pylsl import resolve_byprop
     streams = resolve_byprop(prop, value)
 
-    stream_info = StreamInlet(stream[0]).info()
+    stream_info = StreamInlet(streams[0]).info()
     channels = get_channel_names(stream_info)
     print(channels)
