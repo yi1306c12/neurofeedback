@@ -8,7 +8,7 @@ import collections
 class test_inlet(pylsl.StreamInlet):
 
     def __init__(self, max_sec, num = 0, **keyargs):
-        streams = resolve_byprop('type', 'EEG')
+        streams = pylsl.resolve_byprop('type', 'EEG')
         super().__init__(
             streams[num],
             processing_flags=pylsl.proc_clocksync | pylsl.proc_dejitter | pylsl.proc_monotonize
