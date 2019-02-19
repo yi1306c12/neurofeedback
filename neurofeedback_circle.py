@@ -22,8 +22,10 @@ class test_inlet(pylsl.StreamInlet):
     def update(self):
         _, timestamps = self.pull_chunk(max_samples=self.max_samples, dest_obj=self.data)
         # why deepcopy ?
+        ## to avoid someone change the self.data.shape
         # why numpinize timestamps ?
-        return copy.deepcopy(self.data), numpy.asarray(tiemstamps)
+        ## no particular reason but for usefulness
+        return copy.deepcopy(self.data), numpy.asarray(timestamps)
 
 
 class circular_feedback(visual.Window):
@@ -39,14 +41,20 @@ class circular_feedback(visual.Window):
         super().flip(**keyargs)
 
 
-def fft(time_sequences, sample_rate):
+def wave2psd(waves, sample_rate):
     """
-    time_sequences  :must be [[s1,s1,s1,...],[s2,s2,s2,...],...]
+    waves   :must be [[w1_t0, w2_t0, w3_t0, ...], [w1_t1, w2_t1, w3_t1, ...], ...]
     """
-    window = numpy.hamming(len(time_sequences[0]))
-    windowed_sequences = window * time_sequences
-    
-    numpy.fft.fft(time_sequences, )
+    #apply window
+    N = len(waves)
+    window = numpy.hamming(N)
+    windowed_waves = window * numpy.asarray(waves)
+    #psds
+    Fs = numpy.fft.fftn(windowed_waves, axes=0)
+    psds = numpy.abs(F)**2
+    #freq
+    freq = numpy.fft.fftfreq(N, d=1./sample_rate)
+    return numpy.array_split(psds, 2), numpy.array_split(freq, 2)# return the parts of 0~N/2[Hz]
 
 if __name__ == '__main__':
     # for get EEG data
@@ -56,7 +64,8 @@ if __name__ == '__main__':
 
     ## get electrode index
     from get_channel_names import get_channel_names
-    ROI_elec_names = 'F3', 'F4'
+    ROI_elec_names = 'O1', 'O2'
+#    ROI_elec_names = 'F3', 'F4'
     channel_names = get_channel_names(inlet.info())
     ROI_elec_indexes = [index for index, name in enumerate(channel_names) if name in elec_name]
 
@@ -77,7 +86,12 @@ if __name__ == '__main__':
         # get EEG data
         data, timestamps = inlet.update()
         eeg_buffer.extend(data.T[[ROI_elec_indexes]])
-        if len(eeg_buffer) < eeg_buffer.maxlen:
-            pass
+        if len(eeg_buffer) != eeg_buffer.maxlen:
+            continue
         # fft
-        win.flip()
+        psds, freq = wave2psd(eeg_buffer)
+
+        # display
+        band = (8, 12) # alpha band
+        r = psds[(band[0] < freqs) & (freqs < band[1])].mean()
+        win.flip(r)
