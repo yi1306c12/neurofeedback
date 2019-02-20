@@ -17,15 +17,15 @@ class test_inlet(pylsl.StreamInlet):
         self.sample_rate = self.info().nominal_srate()
         self.max_samples = int(max_sec * self.sample_rate)
         data_shape = (self.channel_count, self.max_samples)
-        self.data = numpy.inf * numpy.ones(data_shape, dtype=numpy.float32)
+#        self.data = numpy.inf * numpy.ones(data_shape, dtype=numpy.float32)
 
     def update(self):
-        _, timestamps = self.pull_chunk(max_samples=self.max_samples, dest_obj=self.data)
+#        _, timestamps = self.pull_chunk(max_samples=self.max_samples, dest_obj=self.data)
+        data, timestamps = self.pull_chunk(max_samples=self.max_samples)
         # why deepcopy ?
         ## to avoid someone change the self.data.shape
-        # why numpinize timestamps ?
-        ## no particular reason but for usefulness
-        return copy.deepcopy(self.data), numpy.asarray(timestamps)
+#        return copy.deepcopy(self.data), numpy.asarray(timestamps)
+        return copy.deepcopy(data), timestamps
 
 
 class circular_feedback(visual.Window):
@@ -83,7 +83,8 @@ if __name__ == '__main__':
     routine_timer = core.CountdownTimer(routine_time)
 
     while numpy.any(numpy.isnan(inlet.update()[0])):# check data
-        print(inlet.data)
+#        print(inlet.data)
+        pass
 
     while routine_timer.getTime() > 0:
         # get EEG data
@@ -102,7 +103,7 @@ if __name__ == '__main__':
         if len(timestamps) == 0:
             print('no time stamps')
         else:
-            print(timestamps[-1], r, len(data))
+            print(timestamps[-1], r, len(data.T))
         win.circle.setRadius(r)
         win.circle.setOpacity(0.5)
         win.circle.draw()
