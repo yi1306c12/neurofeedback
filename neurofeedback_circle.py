@@ -94,9 +94,10 @@ if __name__ == '__main__':
             continue
         # fft
         psds, freq = wave2psd(eeg_buffer, inlet.sample_rate)
+        amps = psds**0.5
 
         # display
         band = (8, 12) # alpha band
-        r = psds[(band[0] < freq) & (freq < band[1])].mean()**0.5
+        r = amps[(band[0] < freq) & (freq < band[1])].mean()
         win.circle.setRadius(r)
         win.flip()
