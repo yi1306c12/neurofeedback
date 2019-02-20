@@ -101,7 +101,7 @@ if __name__ == '__main__':
         r = amps[(band[0] < freq) & (freq < band[1])].mean() * 0.1
         if len(timestamps) == 0:
             print('no time stamps')
-        else
+        else:
             print(timestamps[-1], r)
         win.circle.setRadius(r)
         win.circle.setOpacity(0.5)
