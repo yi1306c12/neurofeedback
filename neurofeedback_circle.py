@@ -36,9 +36,9 @@ class circular_feedback(visual.Window):
             self, edges=edges, fillColor=fillColor, allowGUI=False
             )
     
-    def flip(self, radius, **keyargs):
-        self.circle.setRadius(radius)
-        super().flip(**keyargs)
+#    def flip(self, radius, **keyargs):
+#        self.circle.setRadius(radius)
+#        super().flip(**keyargs)
 
 
 def wave2psd(waves, sample_rate):
@@ -94,4 +94,5 @@ if __name__ == '__main__':
         # display
         band = (8, 12) # alpha band
         r = psds[(band[0] < freqs) & (freqs < band[1])].mean()
-        win.flip(r)
+        win.circle.setRadius(r)
+        win.flip()
