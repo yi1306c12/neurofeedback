@@ -33,7 +33,7 @@ class circular_feedback(visual.Window):
     def __init__(self, edges, fillColor, **keyargs):
         super().__init__(**keyargs)
         self.circle = visual.Circle(
-            self, edges=edges, fillColor=fillColor, fullscr=True, allowGUI=False
+            self, edges=edges, fillColor=fillColor
             )
     
 #    def flip(self, radius, **keyargs):
@@ -76,7 +76,7 @@ if __name__ == '__main__':
     event.globalKeys.add(key=esckey, func=sys.exit)
 
     ## init psychopy
-    win = circular_feedback(32, 'green')
+    win = circular_feedback(32, 'green', fullscr=True, allowGUI=False)
 
     ## set max experiment time
     routine_time = 10
