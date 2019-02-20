@@ -30,10 +30,10 @@ class test_inlet(pylsl.StreamInlet):
 
 class circular_feedback(visual.Window):
     
-    def __init__(self, edges, fillColor, **keyargs):
+    def __init__(self, edges, color, **keyargs):
         super().__init__(**keyargs)
         self.circle = visual.Circle(
-            self, edges=edges, fillColor=fillColor
+            self, edges=edges, fillColor=color, lineColor=color
             )
     
 #    def flip(self, radius, **keyargs):
@@ -65,7 +65,7 @@ if __name__ == '__main__':
 
     ## get electrode index
     from get_channel_names import get_channel_names
-    ROI_elec_names = 'F3', 'F4'
+    ROI_elec_names = ('F4',)
     channel_names = get_channel_names(inlet.info())
     ROI_elec_indexes = [index for index, name in enumerate(channel_names) if name in ROI_elec_names]
     assert len(ROI_elec_names) == len(ROI_elec_indexes), "names:{}, indexes:{}".format(ROI_elec_names,ROI_elec_indexes)
@@ -77,7 +77,7 @@ if __name__ == '__main__':
     event.globalKeys.add(key=esckey, func=sys.exit)
 
     ## init psychopy
-    win = circular_feedback(32, 'green', size=[1280, 720], fullscr=True, allowGUI=False)
+    win = circular_feedback(128, 'limegreen', size=[1920, 1080], units='pix', fullscr=True, allowGUI=False)
 
     ## set max experiment time
     routine_time = int(sys.argv[1])
@@ -91,13 +91,11 @@ if __name__ == '__main__':
         # get EEG data
         data, timestamps = inlet.update()
         assert not numpy.any(numpy.isnan(data)), "data has 'nan' value :{}".format(data)
+
         if len(timestamps) == 0:
             continue
-        try:
-            eeg_buffer.extend(data[:, [ROI_elec_indexes]].T)
-        except:
-            print(data.shape)
-            raise
+        eeg_buffer.extend(data[:, [ROI_elec_indexes]])
+
         if len(eeg_buffer) != eeg_buffer.maxlen:
             continue
         # fft
@@ -107,11 +105,7 @@ if __name__ == '__main__':
         # display
         band = (8, 12) # alpha band
         r = amps[(band[0] < freq) & (freq < band[1])].mean() * 0.1
-        if len(timestamps) == 0:
-            print('no time stamps')
-        else:
-            print(timestamps[-1], r, len(data.T))
         win.circle.setRadius(r)
-        win.circle.setOpacity(0.5)
+#        win.circle.setOpacity(0.5)
         win.circle.draw()
         win.flip()
