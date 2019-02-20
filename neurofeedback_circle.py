@@ -64,8 +64,7 @@ if __name__ == '__main__':
 
     ## get electrode index
     from get_channel_names import get_channel_names
-    ROI_elec_names = 'O1', 'O2'
-#    ROI_elec_names = 'F3', 'F4'
+    ROI_elec_names = 'F3', 'F4'
     channel_names = get_channel_names(inlet.info())
     ROI_elec_indexes = [index for index, name in enumerate(channel_names) if name in ROI_elec_names]
     assert len(ROI_elec_names) == len(ROI_elec_indexes), "names:{}, indexes:{}".format(ROI_elec_names,ROI_elec_indexes)
