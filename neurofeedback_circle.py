@@ -83,7 +83,7 @@ if __name__ == '__main__':
     routine_timer = core.CountdownTimer(routine_time)
 
     while not numpy.any(numpy.isnan(inlet.update()[0])):# check data
-        pass
+        print(inlet.data)
 
     while routine_timer.getTime() > 0:
         # get EEG data
