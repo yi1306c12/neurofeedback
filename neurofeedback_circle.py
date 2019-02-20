@@ -17,7 +17,7 @@ class test_inlet(pylsl.StreamInlet):
         self.sample_rate = self.info().nominal_srate()
         self.max_samples = int(max_sec * self.sample_rate)
         data_shape = (self.channel_count, self.max_samples)
-        self.data = numpy.nan * numpy.ones(data_shape, dtype=numpy.float32)
+        self.data = numpy.inf * numpy.ones(data_shape, dtype=numpy.float32)
 
     def update(self):
         _, timestamps = self.pull_chunk(max_samples=self.max_samples, dest_obj=self.data)
