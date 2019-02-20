@@ -89,7 +89,7 @@ if __name__ == '__main__':
         if len(eeg_buffer) != eeg_buffer.maxlen:
             continue
         # fft
-        psds, freq = wave2psd(eeg_buffer)
+        psds, freq = wave2psd(eeg_buffer, inlet.sample_rate)
 
         # display
         band = (8, 12) # alpha band
