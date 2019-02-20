@@ -101,5 +101,5 @@ if __name__ == '__main__':
         r = amps[(band[0] < freq) & (freq < band[1])].mean()
         win.circle.setRadius(r)
         win.circle.setOpacity(0.5)
-        win.cidcle.draw()
+        win.circle.draw()
         win.flip()
