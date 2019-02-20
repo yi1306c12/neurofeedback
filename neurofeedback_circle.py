@@ -91,7 +91,7 @@ if __name__ == '__main__':
         # get EEG data
         data, timestamps = inlet.update()
         assert not numpy.any(numpy.isnan(data)), "data has 'nan' value :{}".format(data)
-        if len(timestamp) = 0:
+        if len(timestamp) == 0:
             continue
         eeg_buffer.extend(data[[ROI_elec_indexes]].T)
         if len(eeg_buffer) != eeg_buffer.maxlen:
