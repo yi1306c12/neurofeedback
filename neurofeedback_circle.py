@@ -100,4 +100,6 @@ if __name__ == '__main__':
         band = (8, 12) # alpha band
         r = amps[(band[0] < freq) & (freq < band[1])].mean()
         win.circle.setRadius(r)
+        win.circle.setOpacity(0.5)
+        win.cidcle.draw()
         win.flip()
