@@ -54,7 +54,7 @@ def wave2psd(waves, sample_rate):
     psds = numpy.abs(Fs)**2
     #freq
     freq = numpy.fft.fftfreq(N, d=1./sample_rate)
-    return numpy.array_split(psds, 2), numpy.array_split(freq, 2)# return the parts of 0~N/2[Hz]
+    return numpy.array_split(psds, 2)[0], numpy.array_split(freq, 2)[0]# return the parts of 0~N/2[Hz]
 
 if __name__ == '__main__':
     # for get EEG data
