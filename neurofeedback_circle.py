@@ -77,7 +77,7 @@ if __name__ == '__main__':
     event.globalKeys.add(key=esckey, func=sys.exit)
 
     ## init psychopy
-    win = circular_feedback(32, 'green', fullscr=True, allowGUI=False)
+    win = circular_feedback(32, 'green', size=[1280, 720], fullscr=True, allowGUI=False)
 
     ## set max experiment time
     routine_time = int(sys.argv[1])
