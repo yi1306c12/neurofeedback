@@ -33,7 +33,7 @@ class circular_feedback(visual.Window):
     def __init__(self, edges, fillColor, **keyargs):
         super().__init__(**keyargs)
         self.circle = visual.Circle(
-            self, edges=edges, fillColor=fillColor#, allowGUI=False
+            self, edges=edges, fillColor=fillColor, fullscr=True, allowGUI=False
             )
     
 #    def flip(self, radius, **keyargs):
