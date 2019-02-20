@@ -51,7 +51,7 @@ def wave2psd(waves, sample_rate):
     windowed_waves = window * numpy.asarray(waves)
     #psds
     Fs = numpy.fft.fftn(windowed_waves, axes=(0,))
-    psds = numpy.abs(F)**2
+    psds = numpy.abs(Fs)**2
     #freq
     freq = numpy.fft.fftfreq(N, d=1./sample_rate)
     return numpy.array_split(psds, 2), numpy.array_split(freq, 2)# return the parts of 0~N/2[Hz]
@@ -85,9 +85,10 @@ if __name__ == '__main__':
     while routine_timer.getTime() > 0:
         # get EEG data
         data, timestamps = inlet.update()
-        eeg_buffer.extend(data.T[[ROI_elec_indexes]])
+        eeg_buffer.extend(data[[ROI_elec_indexes]].T)
         if len(eeg_buffer) != eeg_buffer.maxlen:
             continue
+        assert numpy.any(numpy.isnan(eeg_buffer)), "eeg_buffer has 'nan' value :{}".format(eeg_buffer)
         # fft
         psds, freq = wave2psd(eeg_buffer, inlet.sample_rate)
 
