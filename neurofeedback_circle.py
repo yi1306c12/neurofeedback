@@ -50,7 +50,7 @@ def wave2psd(waves, sample_rate):
     window = numpy.reshape(numpy.hamming(N), (-1, 1))
     windowed_waves = window * numpy.asarray(waves)
     #psds
-    Fs = numpy.fft.fftn(windowed_waves, axes=0)
+    Fs = numpy.fft.fftn(windowed_waves, axes=(0,))
     psds = numpy.abs(F)**2
     #freq
     freq = numpy.fft.fftfreq(N, d=1./sample_rate)
