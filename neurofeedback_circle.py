@@ -61,7 +61,7 @@ if __name__ == '__main__':
     ## setup buffer
     inlet = test_inlet()
     max_sec = 1
-    eeg_buffer = collections.deque(maxlen=inlet.sample_rate*max_sec)
+    eeg_buffer = collections.deque(maxlen=int(inlet.sample_rate*max_sec))
 
     ## get electrode index
     from get_channel_names import get_channel_names
