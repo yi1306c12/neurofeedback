@@ -94,7 +94,7 @@ if __name__ == '__main__':
         if len(timestamps) == 0:
             continue
         try:
-            eeg_buffer.extend(data[[ROI_elec_indexes]].T)
+            eeg_buffer.extend(data[:, [ROI_elec_indexes]].T)
         except:
             print(data.shape)
             raise
