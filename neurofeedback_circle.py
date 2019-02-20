@@ -25,7 +25,7 @@ class test_inlet(pylsl.StreamInlet):
         # why deepcopy ?
         ## to avoid someone change the self.data.shape
 #        return copy.deepcopy(self.data), numpy.asarray(timestamps)
-        return data, timestamps
+        return numpy.asarray(data), timestamps
 
 
 class circular_feedback(visual.Window):
