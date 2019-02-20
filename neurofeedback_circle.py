@@ -47,7 +47,7 @@ def wave2psd(waves, sample_rate):
     """
     #apply window
     N = len(waves)
-    window = numpy.reshape(numpy.hamming(N), (1, -1))
+    window = numpy.reshape(numpy.hamming(N), (-1, 1))
     windowed_waves = window * numpy.asarray(waves)
     #psds
     Fs = numpy.fft.fftn(windowed_waves, axes=0)
