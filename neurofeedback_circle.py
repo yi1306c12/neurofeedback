@@ -7,7 +7,7 @@ import collections
 
 class test_inlet(pylsl.StreamInlet):
 
-    def __init__(self, max_sec, num = 0, **keyargs):
+    def __init__(self, num = 0, **keyargs):
         streams = pylsl.resolve_byprop('type', 'EEG')
         super().__init__(
             streams[num],
@@ -15,8 +15,8 @@ class test_inlet(pylsl.StreamInlet):
             )
 
         self.sample_rate = self.info().nominal_srate()
-        self.max_samples = int(max_sec * self.sample_rate)
-        data_shape = (self.channel_count, self.max_samples)
+#        self.max_samples = int(max_sec * self.sample_rate)
+#        data_shape = (self.channel_count, self.max_samples)
 #        self.data = numpy.inf * numpy.ones(data_shape, dtype=numpy.float32)
 
     def update(self):
@@ -25,7 +25,7 @@ class test_inlet(pylsl.StreamInlet):
         # why deepcopy ?
         ## to avoid someone change the self.data.shape
 #        return copy.deepcopy(self.data), numpy.asarray(timestamps)
-        return copy.deepcopy(data), timestamps
+        return data, timestamps
 
 
 class circular_feedback(visual.Window):
@@ -59,8 +59,9 @@ def wave2psd(waves, sample_rate):
 if __name__ == '__main__':
     # for get EEG data
     ## setup buffer
-    inlet = test_inlet(1.)
-    eeg_buffer = collections.deque(maxlen=inlet.max_samples)
+    inlet = test_inlet()
+    max_sec = 1
+    eeg_buffer = collections.deque(maxlen=inlet.sample_rate*max_sec)
 
     ## get electrode index
     from get_channel_names import get_channel_names
