@@ -93,7 +93,11 @@ if __name__ == '__main__':
         assert not numpy.any(numpy.isnan(data)), "data has 'nan' value :{}".format(data)
         if len(timestamps) == 0:
             continue
-        eeg_buffer.extend(data[[ROI_elec_indexes]].T)
+        try:
+            eeg_buffer.extend(data[[ROI_elec_indexes]].T)
+        except TypeError:
+            print(data)
+            raise
         if len(eeg_buffer) != eeg_buffer.maxlen:
             continue
         # fft
