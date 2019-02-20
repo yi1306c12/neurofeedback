@@ -79,7 +79,7 @@ if __name__ == '__main__':
     win = circular_feedback(32, 'green', fullscr=True, allowGUI=False)
 
     ## set max experiment time
-    routine_time = 10
+    routine_time = int(sys.argv[1])
     routine_timer = core.CountdownTimer(routine_time)
 
     while numpy.any(numpy.isnan(inlet.update()[0])):# check data
