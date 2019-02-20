@@ -102,7 +102,7 @@ if __name__ == '__main__':
         if len(timestamps) == 0:
             print('no time stamps')
         else:
-            print(timestamps[-1], r)
+            print(timestamps[-1], r, len(data))
         win.circle.setRadius(r)
         win.circle.setOpacity(0.5)
         win.circle.draw()
