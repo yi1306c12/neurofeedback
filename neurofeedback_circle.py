@@ -82,7 +82,7 @@ if __name__ == '__main__':
     routine_time = 10
     routine_timer = core.CountdownTimer(routine_time)
 
-    while not numpy.any(numpy.isnan(inlet.update()[0])):# check data
+    while numpy.any(numpy.isnan(inlet.update()[0])):# check data
         print(inlet.data)
 
     while routine_timer.getTime() > 0:
