@@ -21,7 +21,7 @@ class test_inlet(pylsl.StreamInlet):
 
     def update(self):
 #        _, timestamps = self.pull_chunk(max_samples=self.max_samples, dest_obj=self.data)
-        data, timestamps = self.pull_chunk(max_samples=self.max_samples)
+        data, timestamps = self.pull_chunk()#max_samples=self.max_samples)
         # why deepcopy ?
         ## to avoid someone change the self.data.shape
 #        return copy.deepcopy(self.data), numpy.asarray(timestamps)
