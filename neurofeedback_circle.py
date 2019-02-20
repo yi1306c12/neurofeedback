@@ -95,7 +95,7 @@ if __name__ == '__main__':
             continue
         try:
             eeg_buffer.extend(data[[ROI_elec_indexes]].T)
-        except TypeError:
+        except:
             print(data.shape)
             raise
         if len(eeg_buffer) != eeg_buffer.maxlen:
