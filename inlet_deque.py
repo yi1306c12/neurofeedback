@@ -30,12 +30,12 @@ class InletDeque:
         self.inlet = pylsl.StreamInlet(
             stream_info, max_sec, **inlet_keyargs
         )
-        self.sampling_rate = stream_info.nominal_srate()
-        maxlen = max_sec * self.sampling_rate
+        self.sampling_rate = self.inlet.info().nominal_srate()#stream_info.nominal_srate()
+        maxlen = int(max_sec * self.sampling_rate)
         self._data_deque = collections.deque(maxlen=maxlen)
         self._time_deque = collections.deque(maxlen=maxlen)
 
-        self.channel_names = get_channel_names(stream_info)
+        self.channel_names = get_channel_names(self.inlet.info())
 
     def clear_deques(self):
         """
@@ -64,7 +64,7 @@ class InletDeque:
             self._data_deque.extend(datas)
             self._time_deque.extend(timestamps)
 
-        max_timebreak = max([t2 - t1 for t1, t2 in zip(self._time_deque, self._time_deque[1:])])
+        max_timebreak = max([t2 - t1 for t1, t2 in zip(self._time_deque, list(self._time_deque)[1:])])
         if max_timebreak > allowed_timebreak:# / self.sampling_rate:
             raise TimeBreakError("A short(={}) break detected in ".format(max_timebreak))
 
