@@ -89,6 +89,6 @@ if __name__ == '__main__':
             inlet_deque.clear_deques()
             continue
 
-    print(['timestamp'] + inlet_deque.channel_names, sep=',')
+    print('timestamp', *inlet_deque.channel_names, sep=',')
     for timestamp, data in zip(sequence_of_timestamps, sequence_of_data):
         print(timestamp, *data, sep=',')
