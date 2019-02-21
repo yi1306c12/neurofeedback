@@ -17,14 +17,23 @@ if __name__ == '__main__':
         processing_flags=pylsl.proc_clocksync | pylsl.proc_dejitter | pylsl.proc_monotonize
     )
 
-    diff_timestamps = collections.deque()
-    for i in range(int(sys.argv[4])):
-        _, timestamps = inlet.update(allowed_timebreak=10.)
-        diff_timestamps.extend((timestamps[1:] - timestamps[:-1])*1e3)#[s] -> [ms]
-        hist, edges = numpy.histogram(diff_timestamps, density=True, bins=30)
+    _, timestamps = inlet.update(allowed_timebreak=10.)
+    diff_timestamps = timestamps[1:] - timestamps[:-1]
+    hist, edges = numpy.histogram(
+        diff_timestamps*1e3,#[s] -> [ms]
+        density=True, bins=50
+        )
 
-        fig = figure(title='N = {}, sampling_rate = {}[Hz]'.format(len(diff_timestamps), int(inlet.sampling_rate)))
-        fig.quad(top=hist, bottom=0, left=edges[:-1], right=edges[1:], fill_color='navy', line_color='white', alpha=0.5)
-        fig.xaxis.axis_label = 'diff time[ms]'
-        fig.yaxis.axis_label = 'times'
-        show(fig)
+    fig = figure(
+        title='N = {}, sampling_rate = {}[Hz], min,max = {:.4f}[ms],{:.4f}[ms]'.format(
+            len(diff_timestamps),
+            int(inlet.sampling_rate),
+            min(diff_timestamps),
+            max(diff_timestamps)
+            ),
+        y_range=(0,1)
+        )#, y_axis_type='log')
+    fig.quad(top=hist, bottom=0, left=edges[:-1], right=edges[1:], fill_color='navy', line_color='white', alpha=0.5)
+    fig.xaxis.axis_label = 'diff time[ms]'
+    fig.yaxis.axis_label = 'times'
+    show(fig)
