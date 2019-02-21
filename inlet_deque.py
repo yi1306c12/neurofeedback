@@ -45,7 +45,7 @@ class InletDeque:
         self._data_deque.clear()
         self._time_deque.clear()
 
-    def update(self, allowed_timebreak=1):
+    def update(self, allowed_timebreak=1.):
         """
         returns the last max_sec*nominal_samplingrate of streaming data as numpy.ndarray.
         The reasons changing returns into numpy.ndarray are
@@ -65,7 +65,7 @@ class InletDeque:
             self._time_deque.extend(timestamps)
 
         max_timebreak = max([t2 - t1 for t1, t2 in zip(self._time_deque, list(self._time_deque)[1:])])
-        if max_timebreak > allowed_timebreak:# / self.sampling_rate:
+        if max_timebreak > allowed_timebreak / self.sampling_rate:
             raise TimeBreakError("A short(={}) break detected in ".format(max_timebreak))
 
         return numpy.array(self._data_deque), numpy.array(self._time_deque)
@@ -80,14 +80,12 @@ if __name__ == '__main__':
         processing_flags=pylsl.proc_clocksync | pylsl.proc_dejitter | pylsl.proc_monotonize
     )
 
-    while True:
-        try:
-            sequence_of_data, sequence_of_timestamps = inlet_deque.update()
-            break
-        except TimeBreakError:
-            #This block must not be used.
-            inlet_deque.clear_deques()
-            continue
+    try:
+        sequence_of_data, sequence_of_timestamps = inlet_deque.update(allowed_timebreak=5.)
+    except TimeBreakError:
+        #This block must not be used.
+        inlet_deque.clear_deques()
+        raise
 
     print('timestamp', *inlet_deque.channel_names, sep=',')
     for timestamp, data in zip(sequence_of_timestamps, sequence_of_data):
