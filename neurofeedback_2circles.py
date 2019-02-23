@@ -65,7 +65,7 @@ def wave2psd(waves, sample_rate):
 if __name__ == '__main__':
     max_sec = 1
     # for get EEG data
-    stream = pylsl.resolve_byprop('type', 'EEG')
+    stream = pylsl.resolve_byprop('type', 'EEG')[0]
     inlet_deque = InletDeque(
         stream,
         max_sec,
@@ -101,7 +101,7 @@ if __name__ == '__main__':
             continue
 
         # fft
-        psds, freq = wave2psd(data, inlet_deque.sampling_rate)
+        psds, freq = wave2psd(data[:, ROI_elec_indexes], inlet_deque.sampling_rate)
         amps = psds**0.5
 
         # display
