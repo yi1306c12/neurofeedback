@@ -4,6 +4,8 @@ import numpy
 import copy
 import collections
 
+from inlet_deque import InletDeque
+
 
 class test_inlet(pylsl.StreamInlet):
 
@@ -61,16 +63,19 @@ def wave2psd(waves, sample_rate):
     return numpy.array_split(psds, 2)[0], numpy.array_split(freq, 2)[0]# return the parts of 0~N/2[Hz]
 
 if __name__ == '__main__':
-    # for get EEG data
-    ## setup buffer
-    inlet = test_inlet()
     max_sec = 1
-    eeg_buffer = collections.deque(maxlen=int(inlet.sample_rate*max_sec))
+    # for get EEG data
+    stream = pylsl.resolve_byprop('type', 'EEG')
+    inlet_deque = InletDeque(
+        stream,
+        max_sec,
+        processing_flags=pylsl.proc_clocksync | pylsl.proc_dejitter | pylsl.proc_monotonize
+    )
 
     ## get electrode index
     from get_channel_names import get_channel_names
     ROI_elec_names = ('F3', 'F4')
-    channel_names = get_channel_names(inlet.info())
+    channel_names = get_channel_names(inlet_deque.inlet.info())
     ROI_elec_indexes = [index for index, name in enumerate(channel_names) if name in ROI_elec_names]
     assert len(ROI_elec_names) == len(ROI_elec_indexes), "names:{}, indexes:{}".format(ROI_elec_names,ROI_elec_indexes)
 
@@ -87,25 +92,16 @@ if __name__ == '__main__':
     routine_time = int(sys.argv[1])
     routine_timer = core.CountdownTimer(routine_time)
 
-    while numpy.any(numpy.isnan(inlet.update()[0])):# check data
-#        print(inlet.data)
-        pass
-
     while routine_timer.getTime() > 0:
         # get EEG data
-        data, timestamps = inlet.update()
+        data, timestamps = inlet_deque.update()
         assert not numpy.any(numpy.isnan(data)), "data has 'nan' value :{}".format(data)
 
         if len(timestamps) == 0:
             continue
-#        eeg_buffer.extend(list(data[:, [ROI_elec_indexes]]))
-#        print(data.shape, data[:, ROI_elec_indexes])
-        eeg_buffer.extend(list(data[:, ROI_elec_indexes]))
 
-        if len(eeg_buffer) != eeg_buffer.maxlen:
-            continue
         # fft
-        psds, freq = wave2psd(eeg_buffer, inlet.sample_rate)
+        psds, freq = wave2psd(data, inlet_deque.sampling_rate)
         amps = psds**0.5
 
         # display
