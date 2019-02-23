@@ -35,8 +35,6 @@ class InletDeque:
         self._data_deque = collections.deque(maxlen=maxlen)
         self._time_deque = collections.deque(maxlen=maxlen)
 
-        self.channel_names = get_channel_names(self.inlet.info())
-
     def clear_deques(self):
         """
         To avoid raising TimeBreakError in update.
@@ -88,6 +86,7 @@ if __name__ == '__main__':
         inlet_deque.clear_deques()
         raise
 
-    print('timestamp', *inlet_deque.channel_names, sep=',')
+    from get_channel_names import get_channel_names
+    print('timestamp', *get_channel_names(inlet_deque.inlet.info()), sep=',')
     for timestamp, data in zip(sequence_of_timestamps, sequence_of_data):
         print(timestamp, *data, sep=',')
